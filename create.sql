@@ -1,0 +1,68 @@
+-- Arquivo: database.sql
+
+PRAGMA foreign_keys = ON;
+
+-- Tabela de produtos, adaptada do JSON fornecido
+CREATE TABLE IF NOT EXISTS produto (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    preco REAL NOT NULL,
+    precoOriginal REAL,  -- Campo opcional, pode ser NULL
+    imagem TEXT NOT NULL,
+    categoria TEXT NOT NULL,
+    estoque INTEGER NOT NULL,
+    destaque BOOLEAN NOT NULL -- TRUE ou FALSE
+);
+
+-- Adicionando outras tabelas que você mencionou (se precisar delas no futuro)
+CREATE TABLE IF NOT EXISTS cliente (
+    id_cli INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome_cli TEXT NOT NULL,
+    nascimento_cli TEXT NOT NULL,
+    cpf_cli TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS funcionario (
+    id_func INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome_func TEXT NOT NULL,
+    area_func TEXT NOT NULL,
+    telefone_func TEXT,
+    cpf_func TEXT NOT NULL UNIQUE,
+    data_contrato_func TEXT NOT NULL,
+    salario_func REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS fornecedor (
+    id_forn INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome_forn TEXT NOT NULL,
+    contato_forn TEXT NOT NULL,
+    email_forn TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS pedido (
+    id_ped INTEGER PRIMARY KEY AUTOINCREMENT,
+    cliente_ped INTEGER NOT NULL,
+    funcionario_ped INTEGER NOT NULL,
+    data_ped TEXT NOT NULL,
+    valor_total REAL NOT NULL,
+
+    FOREIGN KEY (cliente_ped)
+        REFERENCES cliente(id_cli),
+
+    FOREIGN KEY (funcionario_ped)
+        REFERENCES funcionario(id_func)
+);
+
+CREATE TABLE IF NOT EXISTS conteudo_pedido (
+    id_it INTEGER PRIMARY KEY AUTOINCREMENT,
+    pedido_it INTEGER NOT NULL,
+    produto_it INTEGER NOT NULL,
+    quantidade_it INTEGER NOT NULL,
+    preco_it REAL NOT NULL,
+
+    FOREIGN KEY (pedido_it)
+        REFERENCES pedido(id_ped),
+
+    FOREIGN KEY (produto_it)
+        REFERENCES produto(id)
+);
